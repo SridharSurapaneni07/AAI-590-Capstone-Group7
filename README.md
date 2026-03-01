@@ -1,8 +1,6 @@
 # 🏙️ BharatPropAdvisor AI
 **A Master's Capstone GenAI Architecture for Multimodal Real Estate Analytics**
 
-![Streamlit Application Interface](src/visualization/gradcam_sample.png)
-
 ## Overview
 BharatPropAdvisor is an end-to-end Machine Learning orchestration system designed to evaluate real-estate ROI and cultural compliance (Vastu) using a **Late-Fusion Multimodal Architecture**. 
 
