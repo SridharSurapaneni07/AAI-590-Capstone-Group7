@@ -14,8 +14,8 @@ This repository contains the complete code for Data Ingestion, EDA bias analysis
 ---
 
 ## Primary Dataset Link:
-https://www.kaggle.com/datasets/pratyushpuri/pan-india-property-listings-2025-real-estat
-e-data 
+https://www.kaggle.com/datasets/pratyushpuri/pan-india-property-listings-2025-real-estate-data
+
 (Pan-India 2025 synthetic but realistic listings,
 ~25k–30k rows, columns: City,Locality, PropertyType (Apartment/Villa/Independent House/Plot/Row House),Price_INR, Facing, AmenitiesCount, Lat/Long, YearBuilt, BHK, etc.)
 
