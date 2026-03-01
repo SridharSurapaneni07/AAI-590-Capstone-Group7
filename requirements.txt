@@ -1,0 +1,16 @@
+streamlit
+pandas
+numpy
+torch
+torchvision
+transformers
+scikit-learn
+xgboost
+mlflow
+optuna
+matplotlib
+seaborn
+folium
+plotly
+pillow
+opencv-python
