@@ -41,13 +41,23 @@ share/python-wheels/
 
 # Project Specific Data & Heavy Files
 # We ignore the heavy Kaggle CSVs and raw images, teammates must download them locally
-data/raw/
-data/processed/
+# data/raw/
+# data/processed/
 *.csv
 *.json
 *.jpg
 *.jpeg
 *.png
+
+# Allow specific data files
+!data/**/*.csv
+!data/**/*.json
+
+# Explicitly ignore REI-Dataset images
+data/raw/REI-Dataset/**/*.jpg
+data/raw/REI-Dataset/**/*.jpeg
+data/raw/REI-Dataset/**/*.png
+
 # Allow the default Streamlit assets to be committed
 !app/assets/*.png
 !src/visualization/*.png
