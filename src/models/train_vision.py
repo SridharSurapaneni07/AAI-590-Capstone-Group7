@@ -46,7 +46,7 @@ def get_vision_model():
     
     return model
 
-def train_vision_model(data_dir="data/raw/REI-Dataset", epochs=1, batch_size=32):
+def train_vision_model(data_dir="data/raw/REI-Dataset", epochs=15, batch_size=32):
     print("Setting up Vision Transformer (ViT-Base)...")
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -58,12 +58,21 @@ def train_vision_model(data_dir="data/raw/REI-Dataset", epochs=1, batch_size=32)
     ])
     
     try:
-        dataset = PremiumScoreImageDataset(root_dir=data_dir, transform=transform)
-        # Limit dataset to 100 samples for swift execution during testing/baseline
-        subset_indices = list(range(100))
-        dataset = torch.utils.data.Subset(dataset, subset_indices)
+        full_dataset = PremiumScoreImageDataset(root_dir=data_dir, transform=transform)
+        total_size = len(full_dataset)
         
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        # Production Scaling: 80/20 Train/Validation Split
+        train_size = int(0.8 * total_size)
+        val_size = total_size - train_size
+        
+        train_dataset, val_dataset = torch.utils.data.random_split(
+            full_dataset, [train_size, val_size], generator=torch.Generator().manual_seed(42)
+        )
+        
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+        print(f"Dataset split: {train_size} Training | {val_size} Validation")
+        
     except FileNotFoundError:
         print(f"Directory {data_dir} not found. Skipping ViT training.")
         return
@@ -77,17 +86,21 @@ def train_vision_model(data_dir="data/raw/REI-Dataset", epochs=1, batch_size=32)
     mlflow.set_tracking_uri(f"file://{mlflow_dir}")
     mlflow.set_experiment("BharatPropAdvisor_Vision")
     
-    with mlflow.start_run(run_name="ViT_Regression_Baseline"):
+    os.makedirs("models/vision", exist_ok=True)
+    model_path = "models/vision/vit_premium_scorer.pth"
+    best_val_loss = float('inf')
+    
+    with mlflow.start_run(run_name="ViT_Regression_Production_Scale"):
         mlflow.log_param("epochs", epochs)
         mlflow.log_param("batch_size", batch_size)
         mlflow.log_param("backbone", "vit_b_16")
         
-        model.train()
         for epoch in range(epochs):
+            # Training Phase
+            model.train()
             running_loss = 0.0
-            for i, (inputs, targets) in enumerate(dataloader):
-                inputs = inputs.to(device)
-                targets = targets.to(device)
+            for i, (inputs, targets) in enumerate(train_loader):
+                inputs, targets = inputs.to(device), targets.to(device)
                 
                 optimizer.zero_grad()
                 outputs = model(inputs)
@@ -96,17 +109,32 @@ def train_vision_model(data_dir="data/raw/REI-Dataset", epochs=1, batch_size=32)
                 optimizer.step()
                 
                 running_loss += loss.item() * inputs.size(0)
-                print(f"Epoch {epoch+1}/{epochs} | Batch {i+1} | Loss: {loss.item():.4f}")
                 
-            epoch_loss = running_loss / len(dataset)
-            print(f"Epoch {epoch+1} Average Loss: {epoch_loss:.4f}")
-            mlflow.log_metric("train_loss", epoch_loss, step=epoch)
+            train_loss = running_loss / train_size
             
-        # Save Vision model
-        os.makedirs("models/vision", exist_ok=True)
-        model_path = "models/vision/vit_premium_scorer.pth"
-        torch.save(model.state_dict(), model_path)
-        print(f"Vision model trained and saved to {model_path}")
+            # Validation Phase
+            model.eval()
+            val_loss = 0.0
+            with torch.no_grad():
+                for inputs, targets in val_loader:
+                    inputs, targets = inputs.to(device), targets.to(device)
+                    outputs = model(inputs)
+                    loss = criterion(outputs, targets)
+                    val_loss += loss.item() * inputs.size(0)
+            
+            val_loss = val_loss / val_size
+            
+            print(f"Epoch {epoch+1}/{epochs} | Train MSE: {train_loss:.4f} | Validation MSE: {val_loss:.4f}")
+            mlflow.log_metric("train_loss", train_loss, step=epoch)
+            mlflow.log_metric("val_loss", val_loss, step=epoch)
+            
+            # Save best model conceptually acting as Early Stopping
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                torch.save(model.state_dict(), model_path)
+                print(f"--> Validation loss improved. Saving best model checkpoint.")
+                
+        print(f"\nProduction Vision model optimally trained and serialized to {model_path}")
         mlflow.log_artifact(model_path)
 
 if __name__ == "__main__":
