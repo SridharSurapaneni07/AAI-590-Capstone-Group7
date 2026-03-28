@@ -11,9 +11,6 @@
 </div>
 
 ---
-
-## 📖 What is BharatPropAdvisor?
-
 Traditional Automated Valuation Models (AVMs) operate exclusively on tabular data (BHK, Square Footage, City), entirely ignoring the subjective visual aesthetics and cultural design rules (like *Vastu Shastra*) that physically drive the Indian real estate market.
 
 **BharatPropAdvisor** solves this by orchestrating a massive **Multimodal Neural Fusion Architecture**. We simultaneously evaluate unlinked datasets across three continuous streams:
