@@ -1,4 +1,4 @@
-# BharatPropAdvisor: A Multimodal GenAI Engine for Real Estate Analysis
+A Multimodal GenAI Engine for Real Estate Analysis
 
 ## Executive Summary
 This project presents an advanced Artificial Intelligence system orchestrating Vision, Text, and Tabular Transformer models to predict real estate ROI and Vastu compliance across Pan-India properties.
