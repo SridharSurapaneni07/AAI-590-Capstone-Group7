@@ -1,6 +1,5 @@
 <div align="center">
 
-# 🏙️ BharatPropAdvisor AI
 **An Enterprise-Grade Multimodal GenAI Engine for Real Estate Valuation**
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)
