@@ -13,7 +13,7 @@ from src.agents.supervisor import SupervisorAgent
 
 # Set page config
 st.set_page_config(
-    page_title="BharatPropAdvisor AI",
+    page_title="PropAdvisor AI",
     page_icon="🏙️",
     layout="wide",
     initial_sidebar_state="expanded"
