@@ -69,7 +69,7 @@ The neural network implements an Enterprise-scale CI/CD PyTorch sequence. During
 
 ## 📂 Master Architecture Tree
 ```text
-BharatPropAdvisorAI/
+/
 ├── README.md                   # This master documentation file
 ├── requirements.txt            # Python environments (PyTorch, Streamlit, MLflow)
 ├── app/
