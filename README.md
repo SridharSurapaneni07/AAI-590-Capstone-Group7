@@ -38,7 +38,7 @@ pip install -r requirements.txt
 **2. Launch the MLflow Tracking Server (MLOps)**
 Monitor the continuous early-stopping algorithms, RMSE metrics, and Adam optimization curves visually.
 ```bash
-mlflow ui --backend-store-uri sqlite:///mlruns.db --port 5000
+mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
 ```
 👉 *Open your browser to: [http://localhost:5000](http://localhost:5000)*
 
