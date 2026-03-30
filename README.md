@@ -13,7 +13,7 @@
 ---
 Traditional Automated Valuation Models (AVMs) operate exclusively on tabular data (BHK, Square Footage, City), entirely ignoring the subjective visual aesthetics and cultural design rules (like *Vastu Shastra*) that physically drive the Indian real estate market.
 
-**BharatPropAdvisor** solves this by orchestrating a massive **Multimodal Neural Fusion Architecture**. We simultaneously evaluate unlinked datasets across three continuous streams:
+Our project solves this by orchestrating a massive **Multimodal Neural Fusion Architecture**. We simultaneously evaluate unlinked datasets across three continuous streams:
 
 1. **The Visual Engine (ViT):** A Vision Transformer (`ViT_B_16`) ingests architectural photography to map structural room aesthetics, generating spatial Grad-CAM heatmaps to prove its visual logic.
 2. **The NLP Engine (mBERT):** A Multilingual BERT model evaluating localized property text descriptions against cultural geometries.
@@ -29,8 +29,7 @@ This architecture includes a localized **MLflow Telemetry Server** to view neura
 
 **1. Clone and Install**
 ```bash
-git clone https://github.com/SridharSurapaneni07/BharatPropAdvisorAI.git
-cd BharatPropAdvisorAI
+git clone https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7.git
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -55,7 +54,7 @@ streamlit run app/main.py
 ## 🧠 Core System Capabilities
 
 ### 1. Explainable AI (XAI)
-Deep Neural Networks are inherently opaque. BharatPropAdvisor breaks the "Black Box" using:
+Deep Neural Networks are inherently opaque. Our project breaks the "Black Box" using:
 *   **ViT-GradCAM:** Generates glowing pixel heatmaps over structural images to explicitly prove to the consumer *what* the visual model valued (e.g., highlighting a bay window).
 *   **Predictive SHAP:** Game-theoretic matrix calculations physically breaking down why a specific algorithmic prediction shifted positively or negatively compared to baseline medians.
 
