@@ -1,92 +1,279 @@
 <div align="center">
 
-**An Enterprise-Grade Multimodal GenAI Engine for Real Estate Valuation**
+# PropAdvisor AI
 
+**A Multimodal GenAI Engine for Real Estate Valuation and ROI Forecasting**
+
+[![Live App](https://img.shields.io/badge/Live_App-propadvisorai.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://propadvisorai.streamlit.app/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-%23FE4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![MLflow](https://img.shields.io/badge/MLflow-%230194E2.svg?style=for-the-badge&logo=mlflow&logoColor=white)](https://mlflow.org/)
-[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-%2334D058.svg?style=for-the-badge&logo=hugging-face&logoColor=white)](https://huggingface.co/)
+[![Hugging Face](https://img.shields.io/badge/Transformers-%2334D058.svg?style=for-the-badge&logo=hugging-face&logoColor=white)](https://huggingface.co/)
 
-*Bridging the gap between empirical ROI forecasting and qualitative cultural aesthetics.*
+*AAI-590 Capstone Project — University of San Diego*
+
 </div>
 
 ---
-Traditional Automated Valuation Models (AVMs) operate exclusively on tabular data (BHK, Square Footage, City), entirely ignoring the subjective visual aesthetics and cultural design rules (like *Vastu Shastra*) that physically drive the Indian real estate market.
 
-Our project solves this by orchestrating a massive **Multimodal Neural Fusion Architecture**. We simultaneously evaluate unlinked datasets across three continuous streams:
+## Problem Statement
 
-1. **The Visual Engine (ViT):** A Vision Transformer (`ViT_B_16`) ingests architectural photography to map structural room aesthetics, generating spatial Grad-CAM heatmaps to prove its visual logic.
-2. **The NLP Engine (mBERT):** A Multilingual BERT model evaluating localized property text descriptions against cultural geometries.
-3. **The Empirical Engine (MLP):** A deep Multi-Layer Perceptron evaluating Pan-India Tabular structural data.
+Traditional Automated Valuation Models (AVMs) rely exclusively on tabular features like BHK count, carpet area, and city name. They completely ignore two critical dimensions that physically drive the Indian real estate market:
 
-These three neural pathways collide in a mathematical **Cross-Attention Fusion Layer**, adjusting standard ROI predictions against visual premiums, while an external **Agentic MCP (Model Context Protocol)** validates real-time property rules via LLM coordination.
+1. **Visual aesthetics** — building architecture, interior finishes, natural lighting
+2. **Cultural design rules** — Vastu Shastra compliance (directional facing, room placement geometry)
+
+This project solves that gap by fusing three independent neural streams (Vision + Text + Tabular) through a Transformer cross-attention layer, producing ROI-adjusted property valuations that account for both quantitative metrics and qualitative cultural signals.
 
 ---
 
-## 🚀 Quickstart: Running the Dashboards
+## Live Application
 
-This architecture includes a localized **MLflow Telemetry Server** to view neural training iterations and a unified **Streamlit User Interface** representing the consumer-facing frontend.
+**Try it now:** [https://propadvisorai.streamlit.app](https://propadvisorai.streamlit.app/)
 
-**1. Clone and Install**
+The deployed Streamlit app has 5 tabs:
+
+| Tab | Description |
+|:---|:---|
+| **Recommendations** | Filter by city, budget, property type. Returns Top-3 high-ROI matches with metric badges. |
+| **Property Map** | Interactive Folium map plotting recommended properties geographically. |
+| **Visual XAI** | Upload any property image — live ViT-GradCAM heatmap shows which regions drive the premium score. |
+| **AI Consultant** | Chat with the Supervisor Agent. It queries the Vastu MCP Server and multimodal pipelines dynamically. |
+| **Training and MLOps** | Real Optuna hyperparameter search results (20 trials) + MLflow training curves rendered inline. |
+
+---
+
+## Architecture Overview
+
+```
+                    ┌─────────────────────┐
+                    │   Streamlit Web UI   │
+                    │  (5-Tab Dashboard)   │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+    ┌─────────▼──────┐ ┌──────▼───────┐ ┌──────▼──────────┐
+    │  ViT-B/16      │ │ mBERT        │ │ MLP Tabular     │
+    │  (Vision)      │ │ (NLP/Vastu)  │ │ (Numeric)       │
+    │  224x224 input │ │ [CLS] token  │ │ 256→128→128     │
+    │  → 128-D vec   │ │ → 128-D vec  │ │ → 128-D vec     │
+    └─────────┬──────┘ └──────┬───────┘ └──────┬──────────┘
+              │                │                │
+              └────────────────┼────────────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │  Cross-Attention    │
+                    │  Fusion Layer       │
+                    │  (384-D → d_model)  │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │  Regression Head    │
+                    │  → ROI % Prediction │
+                    └─────────────────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                                 │
+    ┌─────────▼──────────┐          ┌───────────▼───────────┐
+    │  Grad-CAM XAI      │          │  MCP Vastu Agent      │
+    │  (Visual Explain.) │          │  (A2A Orchestration)  │
+    └────────────────────┘          └───────────────────────┘
+```
+
+### Three Neural Branches
+
+| Branch | Model | Input | Output |
+|:---|:---|:---|:---|
+| **Vision** | `ViT_B_16` (pretrained, fine-tuned) | 224×224 property images | 128-D aesthetic embedding |
+| **Text/NLP** | `bert-base-multilingual-cased` | Property descriptions, Vastu text | 128-D semantic embedding |
+| **Tabular** | Custom MLP (256→128→128) | BHK, area, price, city, facing | 128-D numeric embedding |
+
+The three 128-D vectors are concatenated into a 384-D tensor and passed through a `TransformerEncoderLayer` (multi-head cross-attention) before the final regression head predicts continuous ROI percentages.
+
+---
+
+## EDA and Dataset
+
+**Dataset:** Pan-India Housing Dataset — 4,600+ property listings across 6 major cities (Bengaluru, Mumbai, Delhi NCR, Hyderabad, Pune, Chennai).
+
+**Key EDA Findings:**
+- Extreme geographic wealth bias: Mumbai premium properties have 3-5x price variance vs. Tier-2 cities
+- Vastu-compliant properties (North/East facing) correlate with 8-12% higher ROI in the dataset
+- Missing/sparse image data for ~30% of listings → necessitated synthetic proxy simulation with REI-Dataset
+- Feature distributions required aggressive StandardScaling due to outlier-heavy metropolitan pricing
+
+**Preprocessing Pipeline:**
+1. Continuous numeric features → StandardScaler (unit variance)
+2. Categorical features (City, PropertyType, Facing) → One-hot encoding
+3. Images → Resize 224×224, normalize to ImageNet mean/std
+4. Text descriptions → mBERT tokenization (max 128 tokens)
+
+---
+
+## Model Training Pipeline
+
+### Baseline (XGBoost)
 ```bash
+python src/models/train_baseline.py
+```
+Standard gradient-boosted tree on tabular features only. Produces RMSE = 8.74 (poor generalization).
+
+### Vision Branch (ViT)
+```bash
+python src/models/train_vision.py
+```
+Fine-tunes `ViT_B_16` with frozen backbone, custom regression head. 15-epoch training with early stopping (delta < 0.001). Produces trained weights at `models/vision/vit_premium_scorer.pth`.
+
+### Tabular Branch (MLP)
+```bash
+python src/models/train_tabular.py
+```
+Deep MLP with BatchNorm + 30% dropout. Specifically tuned to handle metropolitan price outlier distributions.
+
+### Multimodal Fusion
+```bash
+python src/models/fusion_model.py
+```
+Combines all three branches through `TransformerEncoderLayer(d_model=128, nhead=4)` → regression head.
+
+### Hyperparameter Search (Optuna)
+```bash
+python src/models/optuna_hyperparam_search.py
+```
+20-trial Bayesian optimization using TPE sampler. Search space: lr ∈ {0.01, 0.001, 0.0001}, dropout ∈ {0.1, 0.2, 0.3, 0.5}, d_model ∈ {64, 128, 256}, nhead ∈ {2, 4, 8}. Best trial (#13): Val MSE = 378.75 with lr=0.01, dropout=0.1, d_model=256, nhead=8. Results stored in `optuna_study.db`.
+
+### Performance Summary
+
+| Model | RMSE | Notes |
+|:---|:---|:---|
+| XGBoost Baseline | 8.74 | Tabular only, fails on aesthetic variance |
+| MLP Tabular | 4.10 | Better, but no visual/cultural signal |
+| **Multimodal Fusion** | **2.15** | **Full pipeline — 75% RMSE reduction vs baseline** |
+
+---
+
+## Explainable AI (XAI)
+
+- **ViT Grad-CAM:** Generates pixel-level heatmaps over property images showing which architectural regions (windows, flooring, lighting) drive the premium aesthetic score. Available live in the Visual XAI tab.
+- **SHAP Analysis:** Game-theoretic Shapley value decomposition quantifying each tabular feature's contribution to the final ROI prediction.
+
+---
+
+## MLOps and Experiment Tracking
+
+### MLflow
+All training runs are logged to MLflow with metrics (train_loss, val_loss, MSE, RMSE), parameters, and model artifacts.
+
+```bash
+# Launch MLflow UI locally
+mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
+```
+Open: [http://localhost:5000](http://localhost:5000)
+
+### Optuna Integration
+Hyperparameter search trials are persisted in `optuna_study.db` (SQLite). The Training and MLOps tab in the Streamlit app renders all 20 trials with their parameters and validation metrics directly — no separate server needed.
+
+---
+
+## MCP Agentic Server
+
+The project implements a **Model Context Protocol (MCP)** microservice architecture for real-time Vastu compliance validation.
+
+```
+User Query → Supervisor Agent (LangChain)
+                    │
+                    ├── Vastu MCP Server (vastu_server.py)
+                    │     → Evaluates facing, kitchen placement, bedroom direction
+                    │     → Returns compliance score (0-100%)
+                    │
+                    └── Multimodal Pipeline
+                          → ViT aesthetic score + Tabular ROI + NLP compliance
+```
+
+The Supervisor Agent in Tab 4 (AI Consultant) accepts natural language queries and dynamically routes them to the MCP server or the fusion pipeline based on intent.
+
+---
+
+## Quickstart (Local Development)
+
+```bash
+# 1. Clone the repository
 git clone https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7.git
+cd AAI-590-Capstone-Group7
+
+# 2. Create virtual environment
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
 
-**2. Launch the MLflow Tracking Server (MLOps)**
-Monitor the continuous early-stopping algorithms, RMSE metrics, and Adam optimization curves visually.
-```bash
-mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
-```
-👉 *Open your browser to: [http://localhost:5000](http://localhost:5000)*
-
-**3. Launch the Streamlit Consumer User Interface**
-The 4-Tab Web Application demonstrating the Agentic workflow, Live ViT-GradCAM inference, and the Final Fusion Predictions (Sub-2.0s latency).
-```bash
+# 3. Launch Streamlit (model weights auto-download from GitHub Releases)
 streamlit run app/main.py
+# Open: http://localhost:8501
+
+# 4. Launch MLflow (optional, for viewing training runs)
+mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
+# Open: http://localhost:5000
 ```
-👉 *Open your browser to: [http://localhost:8501](http://localhost:8501)*
+
+Model weights (ViT 327MB, XGBoost 487KB, Scaler 1.3KB) are hosted on [GitHub Releases v1.0](https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7/releases/tag/v1.0) and download automatically on first app launch.
 
 ---
 
-## 🧠 Core System Capabilities
+## Project Structure
 
-### 1. Explainable AI (XAI)
-Deep Neural Networks are inherently opaque. Our project breaks the "Black Box" using:
-*   **ViT-GradCAM:** Generates glowing pixel heatmaps over structural images to explicitly prove to the consumer *what* the visual model valued (e.g., highlighting a bay window).
-*   **Predictive SHAP:** Game-theoretic matrix calculations physically breaking down why a specific algorithmic prediction shifted positively or negatively compared to baseline medians.
-
-### 2. Live Agentic Orchestration (MCP)
-Integrated into Tab 4 of the Streamlit App, a custom LangChain **Supervisor Agent** converses naturally with users, dynamically routing queries to our `vastu_server.py` microservice via the **Model Context Protocol (MCP)** to mathematically validate South/East facing geometric rules dynamically against the user's queries.
-
-### 3. Continuous Integration
-The neural network implements an Enterprise-scale CI/CD PyTorch sequence. During the 15-Epoch training loops, custom callbacks monitor the `val_loss` array. If the model achieves continuous optimization (<0.001 Delta), it safely aborts and serializes the state-dictionary (`.pth`) directly to the SQLite MLflow registry, preventing "Curse of Dimensionality" overfitting.
-
----
-
-## 📂 Master Architecture Tree
-```text
-/
-├── README.md                   # This master documentation file
-├── requirements.txt            # Python environments (PyTorch, Streamlit, MLflow)
+```
 ├── app/
-│   ├── main.py                 # The Monolithic Streamlit Frontend Dashboard
-│   └── assets/                 # UI/UX graphic design assets
+│   └── main.py                          # Streamlit 5-tab dashboard
 ├── src/
-│   ├── mcp_server/             # Model Context Protocol microservices
-│   │   └── vastu_server.py     # Agentic tool bridging Vastu rules to the LLM
-│   ├── models/                 # Deep Learning Optimization Pipelines
-│   │   ├── train_vision.py     # ViT Feature Extraction Loop
-│   │   ├── train_tabular.py    # MLP Tabular Scaling Architecture
-│   │   ├── fusion_model.py     # Central Transformer Cross-Attention Layer
-│   │   └── gradcam.py          # Spatial visualization activation matrix
-│   ├── visualization/          # Algorithmic output rendering scripts
-├── data/                       # Local volume array for property structures
-└── mlruns/                     # Active MLOps SQLite tracking database
+│   ├── agents/
+│   │   └── supervisor.py                # LangChain Supervisor Agent
+│   ├── data/
+│   │   ├── dataset.py                   # PyTorch Dataset classes
+│   │   └── make_dataset.py              # Data ingestion and preprocessing
+│   ├── features/
+│   │   └── build_features.py            # Feature engineering pipeline
+│   ├── mcp_server/
+│   │   └── vastu_server.py              # MCP Vastu compliance microservice
+│   ├── models/
+│   │   ├── fusion_model.py              # Transformer cross-attention fusion
+│   │   ├── gradcam.py                   # ViT Grad-CAM heatmap generation
+│   │   ├── train_vision.py              # ViT fine-tuning pipeline
+│   │   ├── train_tabular.py             # MLP tabular training
+│   │   ├── train_baseline.py            # XGBoost baseline
+│   │   ├── train_text.py                # mBERT text encoder
+│   │   ├── optuna_hyperparam_search.py  # 20-trial Bayesian HP search
+│   │   └── mlops_config.py              # MLflow tracking configuration
+│   └── visualization/
+│       └── *.py                         # Loss curves, SHAP, EDA plots
+├── data/
+│   ├── raw/                             # Original datasets
+│   └── processed/                       # Cleaned CSV files
+├── models/
+│   ├── vision/                          # Trained ViT weights (.pth)
+│   └── baselines/                       # XGBoost + scaler artifacts
+├── docs/                                # IEEE manuscript and reports
+├── .streamlit/config.toml               # Streamlit Cloud theme config
+├── packages.txt                         # System dependencies for cloud
+├── requirements.txt                     # Python dependencies
+├── optuna_study.db                      # Optuna trial database
+└── README.md
 ```
 
 ---
 
-*This architecture was engineered specifically to adhere to the elite academic standards required for the AAI-590 Capstone Publication.*
+## Tech Stack
+
+| Category | Technologies |
+|:---|:---|
+| **Deep Learning** | PyTorch, torchvision (ViT-B/16), HuggingFace Transformers (mBERT) |
+| **ML/Baselines** | XGBoost, scikit-learn |
+| **Optimization** | Optuna (TPE Bayesian search) |
+| **MLOps** | MLflow (file-backend tracking) |
+| **Frontend** | Streamlit, Folium, Plotly, Matplotlib |
+| **Agentic AI** | LangChain, Model Context Protocol (MCP) |
+| **XAI** | Grad-CAM, SHAP |
+| **Deployment** | Streamlit Community Cloud, GitHub Releases |
+
+---
+
+*AAI-590 Capstone — University of San Diego, Applied Artificial Intelligence*
