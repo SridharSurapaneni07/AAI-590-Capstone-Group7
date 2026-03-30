@@ -11,6 +11,8 @@ optuna
 matplotlib
 seaborn
 folium
+streamlit-folium
 plotly
 pillow
-opencv-python
+opencv-python-headless
+joblib

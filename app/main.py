@@ -8,9 +8,35 @@ import sys
 import torch
 import sqlite3
 import json
+import urllib.request
 
 # Add root folder to python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# ───────────────────────────────────────────────────────────────
+# AUTO-DOWNLOAD MODEL WEIGHTS FROM GITHUB RELEASES
+# ───────────────────────────────────────────────────────────────
+RELEASE_BASE = "https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7/releases/download/v1.0"
+MODEL_FILES = {
+    "models/vision/vit_premium_scorer.pth": f"{RELEASE_BASE}/vit_premium_scorer.pth",
+    "models/baselines/xgboost_baseline.json": f"{RELEASE_BASE}/xgboost_baseline.json",
+    "models/baselines/scaler.pkl": f"{RELEASE_BASE}/scaler.pkl",
+}
+
+def download_models():
+    """Download model weights from GitHub Releases if not present locally."""
+    for local_path, url in MODEL_FILES.items():
+        if not os.path.exists(local_path):
+            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            try:
+                print(f"Downloading {os.path.basename(local_path)}...")
+                urllib.request.urlretrieve(url, local_path)
+                print(f"  Saved to {local_path}")
+            except Exception as e:
+                print(f"  Download failed: {e}")
+
+download_models()
+
 from src.agents.supervisor import SupervisorAgent
 
 # ───────────────────────────────────────────────────────────────
