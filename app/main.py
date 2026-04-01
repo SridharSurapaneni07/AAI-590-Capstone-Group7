@@ -351,22 +351,26 @@ def load_mlflow_metrics():
 # SIDEBAR
 # ───────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("### PropAdvisor")
+    st.image("https://img.icons8.com/fluency/96/real-estate.png", width=64)
+    st.markdown("## PropAdvisor AI")
+    st.caption("Multimodal Real Estate Intelligence")
     st.markdown("---")
-    st.markdown("#### Investor Profile")
     
     with st.form("investment_form"):
+        st.markdown("#### ⚙️ Investment Parameters")
+        
+        city = st.selectbox("Target City", ["Any", "Bengaluru", "MMR (Mumbai)", "Delhi NCR", "Hyderabad", "Pune", "Chennai"])
+        property_type = st.multiselect("Property Type", ["Apartment", "Villa", "Penthouse", "Studio", "Independent House"], default=["Apartment"])
         budget_range = st.slider("Budget Range (Cr)", min_value=0.5, max_value=20.0, value=(1.0, 5.0), step=0.5)
         time_horizon = st.selectbox("Investment Horizon", ["3 Years", "5 Years", "10 Years"])
-        property_type = st.multiselect("Property Type", ["Apartment", "Villa", "Penthouse", "Studio", "Independent House"], default=["Apartment"])
-        city = st.selectbox("Target City", ["Any", "Bengaluru", "MMR (Mumbai)", "Delhi NCR", "Hyderabad", "Pune", "Chennai"])
         
         st.markdown("---")
-        st.markdown("#### Upload Property Image")
-        st.caption("Upload a real estate image for live visual scoring and Grad-CAM analysis.")
-        uploaded_file = st.file_uploader("Select Image", type=["jpg", "png", "jpeg"])
+        st.markdown("#### 📷 Visual Premium Scoring")
+        st.caption("Upload a property photo to evaluate its architectural score using the Vision Transformer.")
+        uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
         
-        analyze_btn = st.form_submit_button("Generate Recommendations", type="primary", use_container_width=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        analyze_btn = st.form_submit_button("Run AI Analysis", type="primary", use_container_width=True)
 
 # ───────────────────────────────────────────────────────────────
 # HEADER
