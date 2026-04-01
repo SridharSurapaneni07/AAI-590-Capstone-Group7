@@ -68,7 +68,7 @@ class SupervisorAgent:
         )
         vastu_data = json.loads(mcp_response)
 
-        report = f"### Vastu Compliance Analysis\n\n"
+        report = f"**Vastu Compliance Analysis**\n\n"
         report += f"**Overall Score:** {vastu_data['vastu_compliance_percentage']}% Vastu Compliant\n\n"
 
         if vastu_data['detailed_report']:
@@ -83,7 +83,7 @@ class SupervisorAgent:
 
     def _format_investment_response(self, query: str, property_features: dict) -> str:
         """Generate an investment-focused analysis using available property data."""
-        report = "### Investment Analysis\n\n"
+        report = "**Investment Analysis**\n\n"
 
         city = property_features.get('City', 'Unknown')
         locality = property_features.get('Locality', 'Unknown')
