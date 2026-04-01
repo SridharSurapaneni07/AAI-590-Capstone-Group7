@@ -476,13 +476,17 @@ if st.session_state.get('analyzed', False):
                         """)
                         
                         with st.expander("Request AI Vastu Analysis"):
-                            import hashlib, time
-                            time.sleep(0.3)
-                            hash_str = f"{prop.get('Locality', '')}_{prop.get('City', '')}_{prop.get('PropertyType', '')}"
-                            hash_int = int(hashlib.md5(hash_str.encode('utf-8')).hexdigest(), 16)
-                            vastu_score = 60 + (hash_int % 40)
-                            st.success(f"Vastu Match Score: {vastu_score}%")
-                            st.caption("Entrance facing verified. Kitchen aligned South-East. Master bedroom confirmed South-West.")
+                            from src.mcp_server.vastu_server import VastuMCPServer
+                            import json as _json
+                            _vastu = VastuMCPServer()
+                            _facing = str(prop.get('Facing', 'Unknown'))
+                            _result = _json.loads(_vastu.evaluate_property(facing=_facing))
+                            st.success(f"Vastu Match Score: {_result['vastu_compliance_percentage']}%")
+                            if _result['detailed_report']:
+                                for _detail in _result['detailed_report']:
+                                    st.caption(f"- {_detail}")
+                            else:
+                                st.caption(f"Facing: {_facing}. No detailed Vastu rules matched. Provide kitchen/bedroom placement for a complete assessment.")
 
         # ── TAB 2: Map ──
         with tab2:
@@ -540,14 +544,40 @@ if st.session_state.get('analyzed', False):
         # ── TAB 4: AI Consultant ──
         with tab4:
             st.subheader("Agent-to-Agent Orchestrator")
-            st.caption("Talk to the Supervisor Agent. It queries the Vastu MCP Server and Multimodal pipelines dynamically.")
+            st.caption("Ask about investment potential, Vastu compliance, or property analysis. The agent uses real data from your recommended properties.")
             
-            user_query = st.chat_input("Ask: Is this apartment aligned for wealth generation?")
+            # Initialize chat history
+            if 'chat_history' not in st.session_state:
+                st.session_state.chat_history = []
+            
+            # Display existing chat history
+            for msg in st.session_state.chat_history:
+                st.chat_message(msg['role']).write(msg['content'])
+            
+            user_query = st.chat_input("Ask: Is this East-facing apartment a good investment?")
             if user_query:
                 st.chat_message("user").write(user_query)
-                test_features = {"Facing": "North", "Kitchen": "South-East", "Bedroom": "South-West"}
-                response = agent.process_query(user_query, test_features)
+                st.session_state.chat_history.append({'role': 'user', 'content': user_query})
+                
+                # Build real property features from top recommendation
+                if top_3:
+                    best_prop = top_3[0]
+                    real_features = {
+                        'Facing': str(best_prop.get('Facing', 'Unknown')),
+                        'City': str(best_prop.get('City', 'Unknown')),
+                        'Locality': str(best_prop.get('Locality', 'Unknown')),
+                        'PropertyType': str(best_prop.get('PropertyType', 'Property')),
+                        'BHK': best_prop.get('BHK', 'N/A'),
+                        'Price_INR_Cr': best_prop.get('Price_INR_Cr', 0),
+                        'Actual_3Yr_ROI_Pct': best_prop.get('Actual_3Yr_ROI_Pct', 0),
+                        'Actual_5Yr_ROI_Pct': best_prop.get('Actual_5Yr_ROI_Pct', 0),
+                    }
+                else:
+                    real_features = {}
+                
+                response = agent.process_query(user_query, real_features)
                 st.chat_message("assistant").write(response)
+                st.session_state.chat_history.append({'role': 'assistant', 'content': response})
 
         # ── TAB 5: Training and MLOps ──
         with tab5:
