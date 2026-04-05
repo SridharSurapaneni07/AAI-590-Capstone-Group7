@@ -1,19 +1,5 @@
 import json
-import re
-from src.mcp_server.vastu_server import VastuMCPServer
-
-# Keywords to detect real estate / property queries
-PROPERTY_KEYWORDS = [
-    "property", "apartment", "flat", "villa", "house", "penthouse", "studio",
-    "invest", "roi", "return", "buy", "sell", "rent", "price", "cost",
-    "vastu", "facing", "north", "south", "east", "west",
-    "bhk", "bedroom", "kitchen", "bathroom", "balcony",
-    "sqft", "area", "carpet", "floor",
-    "wealth", "growth", "appreciate", "depreciate", "good", "bad",
-    "bengaluru", "mumbai", "delhi", "hyderabad", "pune", "chennai", "mmr",
-    "real estate", "location", "locality", "rera"
-]
-
+from src.model_pipeline_design_and_building.vastu_server import VastuMCPServer
 
 class SupervisorAgent:
     """

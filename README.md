@@ -140,7 +140,7 @@ Combines all three branches through `TransformerEncoderLayer(d_model=128, nhead=
 ```bash
 python src/models/optuna_hyperparam_search.py
 ```
-20-trial Bayesian optimization using TPE sampler. Search space: lr ∈ {0.01, 0.001, 0.0001}, dropout ∈ {0.1, 0.2, 0.3, 0.5}, d_model ∈ {64, 128, 256}, nhead ∈ {2, 4, 8}. Best trial (#13): Val MSE = 378.75 with lr=0.01, dropout=0.1, d_model=256, nhead=8. Results stored in `optuna_study.db`.
+20-trial Bayesian optimization using TPE sampler. Search space: lr ∈ {0.01, 0.001, 0.0001}, dropout ∈ {0.1, 0.2, 0.3, 0.5}, d_model ∈ {64, 128, 256}, nhead ∈ {2, 4, 8}. Best trial (#13): Val MSE = 378.75 with lr=0.01, dropout=0.1, d_model=256, nhead=8. Results stored in `models/optuna_study.db`.
 
 ### Performance Summary
 
@@ -171,7 +171,7 @@ mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
 Open: [http://localhost:5000](http://localhost:5000)
 
 ### Optuna Integration
-Hyperparameter search trials are persisted in `optuna_study.db` (SQLite). The Training and MLOps tab in the Streamlit app renders all 20 trials with their parameters and validation metrics directly — no separate server needed.
+Hyperparameter search trials are persisted in `models/optuna_study.db` (SQLite). The Training and MLOps tab in the Streamlit app renders all 20 trials with their parameters and validation metrics directly — no separate server needed.
 
 ---
 
@@ -255,7 +255,6 @@ Model weights (ViT 327MB, XGBoost 487KB, Scaler 1.3KB) are hosted on [GitHub Rel
 ├── .streamlit/config.toml               # Streamlit Cloud theme config
 ├── packages.txt                         # System dependencies for cloud
 ├── requirements.txt                     # Python dependencies
-├── optuna_study.db                      # Optuna trial database
 └── README.md
 ```
 

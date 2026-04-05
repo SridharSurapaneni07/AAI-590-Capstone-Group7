@@ -10,7 +10,7 @@ import glob
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from src.models.train_vision import get_vision_model
+from src.model_training.train_vision import get_vision_model
 
 def generate_table():
     print("Loading datasets and trained models to generate empirical output table...\n")

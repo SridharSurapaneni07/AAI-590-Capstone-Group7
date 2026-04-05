@@ -5,7 +5,7 @@ import cv2
 import matplotlib.pyplot as plt
 from PIL import Image
 from torchvision import transforms
-from src.models.train_vision import get_vision_model
+from src.model_training.train_vision import get_vision_model
 import os
 
 class ViTGradCAM:
