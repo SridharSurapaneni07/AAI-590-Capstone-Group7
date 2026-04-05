@@ -114,31 +114,31 @@ The three 128-D vectors are concatenated into a 384-D tensor and passed through 
 
 ### Baseline (XGBoost)
 ```bash
-python src/models/train_baseline.py
+python src/model_training/train_baseline.py
 ```
 Standard gradient-boosted tree on tabular features only. Produces RMSE = 8.74 (poor generalization).
 
 ### Vision Branch (ViT)
 ```bash
-python src/models/train_vision.py
+python src/model_training/train_vision.py
 ```
 Fine-tunes `ViT_B_16` with frozen backbone, custom regression head. 15-epoch training with early stopping (delta < 0.001). Produces trained weights at `models/vision/vit_premium_scorer.pth`.
 
 ### Tabular Branch (MLP)
 ```bash
-python src/models/train_tabular.py
+python src/model_training/train_tabular.py
 ```
 Deep MLP with BatchNorm + 30% dropout. Specifically tuned to handle metropolitan price outlier distributions.
 
 ### Multimodal Fusion
 ```bash
-python src/models/fusion_model.py
+python src/model_pipeline_design_and_building/fusion_model.py
 ```
 Combines all three branches through `TransformerEncoderLayer(d_model=128, nhead=4)` → regression head.
 
 ### Hyperparameter Search (Optuna)
 ```bash
-python src/models/optuna_hyperparam_search.py
+python src/model_optimization/optuna_hyperparam_search.py
 ```
 20-trial Bayesian optimization using TPE sampler. Search space: lr ∈ {0.01, 0.001, 0.0001}, dropout ∈ {0.1, 0.2, 0.3, 0.5}, d_model ∈ {64, 128, 256}, nhead ∈ {2, 4, 8}. Best trial (#13): Val MSE = 378.75 with lr=0.01, dropout=0.1, d_model=256, nhead=8. Results stored in `models/optuna_study.db`.
 
@@ -225,26 +225,26 @@ Model weights (ViT 327MB, XGBoost 487KB, Scaler 1.3KB) are hosted on [GitHub Rel
 ├── app/
 │   └── main.py                          # Streamlit 5-tab dashboard
 ├── src/
-│   ├── agents/
-│   │   └── supervisor.py                # LangChain Supervisor Agent
-│   ├── data/
+│   ├── data_cleaning/
 │   │   ├── dataset.py                   # PyTorch Dataset classes
 │   │   └── make_dataset.py              # Data ingestion and preprocessing
-│   ├── features/
-│   │   └── build_features.py            # Feature engineering pipeline
-│   ├── mcp_server/
-│   │   └── vastu_server.py              # MCP Vastu compliance microservice
-│   ├── models/
+│   ├── exploratory_data_analysis/
+│   │   └── generate_eda.py              # Feature engineering and EDA graphs
+│   ├── model_optimization/
+│   │   └── optuna_hyperparam_search.py  # 20-trial Bayesian HP search
+│   ├── model_pipeline_analysis_and_discussion/
+│   │   └── *.py                         # Loss curves, SHAP, sample outputs
+│   ├── model_pipeline_design_and_building/
 │   │   ├── fusion_model.py              # Transformer cross-attention fusion
-│   │   ├── gradcam.py                   # ViT Grad-CAM heatmap generation
-│   │   ├── train_vision.py              # ViT fine-tuning pipeline
-│   │   ├── train_tabular.py             # MLP tabular training
-│   │   ├── train_baseline.py            # XGBoost baseline
-│   │   ├── train_text.py                # mBERT text encoder
-│   │   ├── optuna_hyperparam_search.py  # 20-trial Bayesian HP search
-│   │   └── mlops_config.py              # MLflow tracking configuration
-│   └── visualization/
-│       └── *.py                         # Loss curves, SHAP, EDA plots
+│   │   ├── gradcam.py                   # ViT Grad-CAM heatmap mapping
+│   │   ├── mlops_config.py              # MLflow tracking configuration
+│   │   ├── supervisor.py                # LangChain Supervisor Agent
+│   │   └── vastu_server.py              # MCP Vastu compliance microservice
+│   └── model_training/
+│       ├── train_baseline.py            # XGBoost baseline
+│       ├── train_tabular.py             # MLP tabular training
+│       ├── train_text.py                # mBERT text encoder
+│       └── train_vision.py              # ViT fine-tuning pipeline
 ├── data/
 │   ├── raw/                             # Original datasets
 │   └── processed/                       # Cleaned CSV files

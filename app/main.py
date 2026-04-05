@@ -8,9 +8,11 @@ import sys
 import torch
 import sqlite3
 import urllib.request
+from pathlib import Path
 
 # Add root folder to python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+ROOT_DIR = Path(__file__).parent.parent.resolve()
+sys.path.append(str(ROOT_DIR))
 
 # ───────────────────────────────────────────────────────────────
 # AUTO-DOWNLOAD MODEL WEIGHTS FROM GITHUB RELEASES
@@ -51,194 +53,10 @@ st.set_page_config(
 # ───────────────────────────────────────────────────────────────
 # PREMIUM CSS — Light, Clean, Mobile-Responsive
 # ───────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
-    /* Global */
-    .stApp {
-        background-color: #f5f7fb;
-        font-family: 'Inter', sans-serif;
-        color: #1a1a2e;
-    }
-    
-    /* Hide Streamlit branding */
-    #MainMenu, footer, header {visibility: hidden;}
-
-    /* Title */
-    .app-title {
-        font-size: 2.4rem;
-        font-weight: 800;
-        color: #1a1a2e;
-        letter-spacing: -1px;
-        margin-bottom: 0;
-    }
-    .app-subtitle {
-        color: #6c757d;
-        font-size: 1rem;
-        font-weight: 400;
-        margin-bottom: 1.5rem;
-    }
-    
-    /* Cards */
-    .prop-card {
-        background: #ffffff;
-        border: 1px solid #e8ecf1;
-        border-radius: 14px;
-        padding: 24px;
-        margin-bottom: 1rem;
-        transition: all 0.25s ease;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .prop-card:hover {
-        border-color: #667eea;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.12);
-    }
-    
-    /* Property title */
-    .prop-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1a1a2e;
-        margin-bottom: 0.3rem;
-    }
-    .prop-loc {
-        color: #6c757d;
-        font-size: 0.85rem;
-        margin-bottom: 0.8rem;
-    }
-    .prop-price {
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: #00b894;
-        margin: 0.5rem 0;
-    }
-    
-    /* Metric badges */
-    .metric-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 0.8rem;
-    }
-    .m-badge {
-        background: #eef1f8;
-        border: 1px solid #dce1ec;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #4a5568;
-    }
-    .m-badge.vision {
-        background: #fff9e6;
-        border-color: #ffd966;
-        color: #b8860b;
-    }
-    
-    /* Stats row */
-    .stats-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-        margin: 1.5rem 0;
-    }
-    .stat-card {
-        flex: 1;
-        min-width: 140px;
-        background: #ffffff;
-        border: 1px solid #e8ecf1;
-        border-radius: 12px;
-        padding: 16px;
-        text-align: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    }
-    .stat-value {
-        font-size: 1.6rem;
-        font-weight: 800;
-        color: #667eea;
-    }
-    .stat-label {
-        font-size: 0.75rem;
-        color: #6c757d;
-        margin-top: 4px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    /* Optuna table */
-    .optuna-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.85rem;
-        margin-top: 1rem;
-    }
-    .optuna-table th {
-        background: #eef1f8;
-        color: #1a1a2e;
-        padding: 10px 14px;
-        text-align: left;
-        font-weight: 600;
-        border-bottom: 2px solid #dce1ec;
-    }
-    .optuna-table td {
-        padding: 8px 14px;
-        border-bottom: 1px solid #f0f0f5;
-        color: #4a5568;
-    }
-    .optuna-table tr:hover td {
-        background: #f5f7fb;
-    }
-    .best-row td {
-        color: #00b894 !important;
-        font-weight: 700;
-    }
-    
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background: #ffffff !important;
-        border-right: 1px solid #e8ecf1;
-    }
-    
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 4px;
-        background: #eef1f8;
-        border-radius: 12px;
-        padding: 4px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        color: #6c757d;
-        font-weight: 600;
-        padding: 8px 16px;
-    }
-    .stTabs [aria-selected="true"] {
-        background: #ffffff !important;
-        color: #667eea !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
-    
-    /* Best config card */
-    .best-card {
-        background: #f0faf5;
-        border: 1px solid #b2dfdb;
-        border-radius: 14px;
-        padding: 20px;
-        margin-top: 1rem;
-    }
-    
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        .app-title { font-size: 1.6rem; }
-        .prop-price { font-size: 1.4rem; }
-        .stats-row { flex-direction: column; }
-        .stat-card { min-width: 100%; }
-        .metric-row { flex-direction: column; }
-    }
-</style>
-""", unsafe_allow_html=True)
+css_path = Path(__file__).parent / "assets" / "style.css"
+if css_path.exists():
+    with open(css_path) as f:
+        st.markdown(f"<style>\n{f.read()}\n</style>", unsafe_allow_html=True)
 
 # ───────────────────────────────────────────────────────────────
 # CACHED RESOURCES
@@ -284,8 +102,8 @@ df_properties = load_data()
 
 def load_optuna_trials():
     """Load real Optuna trial data from the SQLite study database."""
-    db_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'optuna_study.db')
-    if not os.path.exists(db_path):
+    db_path = Path(__file__).parent.parent / 'models' / 'optuna_study.db'
+    if not db_path.exists():
         return None
     try:
         conn = sqlite3.connect(db_path)
@@ -301,9 +119,9 @@ def load_optuna_trials():
 
 def load_mlflow_metrics():
     """Load training metrics from MLflow local file store."""
-    mlruns_dir = os.path.join(os.path.dirname(__file__), '..', 'mlruns')
+    mlruns_dir = Path(__file__).parent.parent / 'mlruns'
     metrics_data = []
-    if not os.path.exists(mlruns_dir):
+    if not mlruns_dir.exists():
         return None
     for exp_id in os.listdir(mlruns_dir):
         exp_path = os.path.join(mlruns_dir, exp_id)
