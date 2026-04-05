@@ -7,7 +7,6 @@ from PIL import Image
 import sys
 import torch
 import sqlite3
-import json
 import urllib.request
 
 # Add root folder to python path
@@ -37,7 +36,7 @@ def download_models():
 
 download_models()
 
-from src.agents.supervisor import SupervisorAgent
+from src.model_pipeline_design_and_building.supervisor import SupervisorAgent
 
 # ───────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -244,19 +243,19 @@ st.markdown("""
 # ───────────────────────────────────────────────────────────────
 # CACHED RESOURCES
 # ───────────────────────────────────────────────────────────────
-@st.cache_resource
+@st.cache_resource(show_spinner="Loading...")
 def get_agent():
     return SupervisorAgent()
 
 agent = get_agent()
 
-@st.cache_resource
+@st.cache_resource(show_spinner="Loading...")
 def get_vision_xai():
     import importlib
-    import src.models.gradcam
-    importlib.reload(src.models.gradcam)
-    from src.models.train_vision import get_vision_model
-    from src.models.gradcam import ViTGradCAM
+    import src.model_pipeline_design_and_building.gradcam
+    importlib.reload(src.model_pipeline_design_and_building.gradcam)
+    from src.model_training.train_vision import get_vision_model
+    from src.model_pipeline_design_and_building.gradcam import ViTGradCAM
     device = torch.device("cpu")
     model = get_vision_model().to(device)
     model.eval()
@@ -273,7 +272,7 @@ except Exception as e:
     vision_ready = False
     st.sidebar.error(f"Vision init error: {e}")
 
-@st.cache_data
+@st.cache_data(show_spinner="Loading...")
 def load_data():
     try:
         return pd.read_csv("data/processed/processed_pan_india_properties.csv")
@@ -285,7 +284,7 @@ df_properties = load_data()
 
 def load_optuna_trials():
     """Load real Optuna trial data from the SQLite study database."""
-    db_path = os.path.join(os.path.dirname(__file__), '..', 'optuna_study.db')
+    db_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'optuna_study.db')
     if not os.path.exists(db_path):
         return None
     try:
@@ -399,7 +398,7 @@ if analyze_btn:
     st.session_state['analyzed'] = True
 
 if st.session_state.get('analyzed', False):
-    with st.spinner("Running multimodal analysis pipeline..."):
+    with st.spinner("Running..."):
         filtered_df = df_properties.copy()
         if not filtered_df.empty:
             if city != "Any":
@@ -522,7 +521,7 @@ if st.session_state.get('analyzed', False):
                 if vision_ready:
                     with st.spinner("Running ViT-GradCAM inference..."):
                         from torchvision import transforms
-                        from src.models.gradcam import apply_heatmap
+                        from src.model_pipeline_design_and_building.gradcam import apply_heatmap
                         
                         transform = transforms.Compose([
                             transforms.Resize((224, 224)),
