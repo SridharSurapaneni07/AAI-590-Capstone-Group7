@@ -297,7 +297,7 @@ if st.session_state.get('analyzed', False):
                         """)
                         
                         with st.expander("Request AI Vastu Analysis"):
-                            from src.mcp_server.vastu_server import VastuMCPServer
+                            from src.model_pipeline_design_and_building.vastu_server import VastuMCPServer
                             import json as _json
                             _vastu = VastuMCPServer()
                             _facing = str(prop.get('Facing', 'Unknown'))
