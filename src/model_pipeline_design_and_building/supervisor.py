@@ -1,11 +1,9 @@
 import json
 from src.model_pipeline_design_and_building.vastu_server import VastuMCPServer
 
-PROPERTY_KEYWORDS = [
-    "property", "apartment", "villa", "house", "home", "real estate", "investment",
-    "valuation", "price", "roi", "bhk", "vastu", "facing", "kitchen",
-    "south", "north", "east", "west", "wealth", "buy", "sell", "flat", "return"
-]
+PROPERTY_ENTITIES = ["property", "apartment", "villa", "house", "home", "real estate", "flat", "bhk", "land", "plot"]
+PROPERTY_TOPICS = ["investment", "valuation", "price", "roi", "vastu", "facing", "kitchen", "south", "north", "east", "west", "wealth", "buy", "sell", "return", "good", "bad", "worth"]
+
 
 class SupervisorAgent:
     """
@@ -18,9 +16,17 @@ class SupervisorAgent:
         self.vastu_mcp = VastuMCPServer()
 
     def _is_property_related(self, query: str) -> bool:
-        """Check if the query is related to real estate / property analysis."""
+        """Check if the query is related to real estate context by requiring an entity and a topic."""
         query_lower = query.lower()
-        return any(kw in query_lower for kw in PROPERTY_KEYWORDS)
+        
+        # Immediate match for highly specific analytical queries
+        if "vastu" in query_lower or "roi" in query_lower:
+            return True
+            
+        has_entity = any(kw in query_lower for kw in PROPERTY_ENTITIES)
+        has_topic = any(kw in query_lower for kw in PROPERTY_TOPICS)
+        
+        return has_entity and has_topic
 
     def _extract_facing(self, query: str) -> str:
         """Extract facing direction from the user's query text."""

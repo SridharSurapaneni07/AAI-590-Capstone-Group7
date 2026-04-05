@@ -375,8 +375,12 @@ if st.session_state.get('analyzed', False):
             for msg in st.session_state.chat_history:
                 st.chat_message(msg['role']).write(msg['content'])
             
-            user_query = st.chat_input("Ask: Is this East-facing apartment a good investment?")
-            if user_query:
+            # Chat Input Form (Prevents floating over other tabs)
+            with st.form("chat_form", clear_on_submit=True):
+                user_query = st.text_input("💬 Ask the AI Consultant:", placeholder="e.g. Is this East-facing apartment a good investment?")
+                submitted = st.form_submit_button("Send Query 🚀")
+
+            if submitted and user_query:
                 st.chat_message("user").write(user_query)
                 st.session_state.chat_history.append({'role': 'user', 'content': user_query})
                 
