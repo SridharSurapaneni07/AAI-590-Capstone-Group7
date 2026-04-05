@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
-from src.models.train_tabular import PropTabularBranch
-from src.models.train_text import VastuTextBranch
-from src.models.train_vision import get_vision_model
+from src.model_training.train_tabular import PropTabularBranch
+from src.model_training.train_text import VastuTextBranch
+from src.model_training.train_vision import get_vision_model
 
 class MultimodalFusionModel(nn.Module):
     """

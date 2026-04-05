@@ -5,8 +5,8 @@ from PIL import Image
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from src.models.train_vision import get_vision_model
-from src.models.gradcam import ViTGradCAM, apply_heatmap
+from src.model_training.train_vision import get_vision_model
+from src.model_pipeline_design_and_building.gradcam import ViTGradCAM, apply_heatmap
 
 def generate_table_gradcams():
     print("Loading trained ViT model weights...")

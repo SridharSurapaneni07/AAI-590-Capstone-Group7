@@ -24,7 +24,7 @@ import sys
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from src.models.train_vision import PremiumScoreImageDataset, get_vision_model
+from src.model_training.train_vision import PremiumScoreImageDataset, get_vision_model
 from torchvision import transforms
 
 
@@ -171,7 +171,7 @@ def run_search():
     mlflow_dir = os.path.join(os.getcwd(), "mlruns")
 
     # Create or load the Optuna study
-    db_path = os.path.join(os.getcwd(), "optuna_study.db")
+    db_path = os.path.join(os.getcwd(), "models", "optuna_study.db")
     study = optuna.create_study(
         study_name="hyperparam_optimization",
         storage=f"sqlite:///{db_path}",

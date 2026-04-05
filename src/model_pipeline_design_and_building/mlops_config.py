@@ -27,7 +27,7 @@ def setup_optuna_study(study_name="hyperparam_optimization"):
     """
     Sets up a basic Optuna study to track hyperparameter sweeps.
     """
-    db_path = os.path.join(os.getcwd(), "optuna_study.db")
+    db_path = os.path.join(os.getcwd(), "models", "optuna_study.db")
     storage_url = f"sqlite:///{db_path}"
     
     study = optuna.create_study(
