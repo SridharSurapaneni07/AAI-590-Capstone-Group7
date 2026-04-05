@@ -1,6 +1,12 @@
 import json
 from src.model_pipeline_design_and_building.vastu_server import VastuMCPServer
 
+PROPERTY_KEYWORDS = [
+    "property", "apartment", "villa", "house", "home", "real estate", "investment",
+    "valuation", "price", "roi", "bhk", "vastu", "facing", "kitchen",
+    "south", "north", "east", "west", "wealth", "buy", "sell", "flat", "return"
+]
+
 class SupervisorAgent:
     """
     Agent-to-Agent (A2A) Orchestrator.
