@@ -60,7 +60,7 @@ data/raw/REI-Dataset/**/*.png
 
 # Allow the default Streamlit assets to be committed
 !app/assets/*.png
-!src/visualization/*.png
+!reports/figures/*.png
 
 # Model Weights (Do not push 500MB PyTorch files to GitHub)
 models/vision/*.pth
