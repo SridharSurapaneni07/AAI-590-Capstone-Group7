@@ -1,21 +1,47 @@
 <div align="center">
-
+  
 # PropAdvisor AI
 
 **A Multimodal GenAI Engine for Real Estate Valuation and ROI Forecasting**
+
+*This project is a part of the AAI-590 course in the Applied Artificial Intelligence Program at the University of San Diego (USD).*
+-- Project Status: [Completed]
 
 [![Live App](https://img.shields.io/badge/Live_App-propadvisorai.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://propadvisorai.streamlit.app/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)
 [![MLflow](https://img.shields.io/badge/MLflow-%230194E2.svg?style=for-the-badge&logo=mlflow&logoColor=white)](https://mlflow.org/)
 [![Hugging Face](https://img.shields.io/badge/Transformers-%2334D058.svg?style=for-the-badge&logo=hugging-face&logoColor=white)](https://huggingface.co/)
 
-*AAI-590 Capstone Project — University of San Diego*
-
 </div>
 
 ---
 
-## Problem Statement
+## Installation (Local Development)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7.git
+cd AAI-590-Capstone-Group7
+
+# 2. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Launch Streamlit (model weights auto-download from GitHub Releases)
+streamlit run app/main.py
+# Open: http://localhost:8501
+
+# 4. Launch MLflow (optional, for viewing training runs)
+mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
+# Open: http://localhost:5000
+```
+
+Model weights (ViT 327MB, XGBoost 487KB, Scaler 1.3KB) are hosted on [GitHub Releases v1.0](https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7/releases/tag/v1.0) and download automatically on first app launch.
+
+---
+
+## Project Intro/Objective
 
 Traditional Automated Valuation Models (AVMs) rely exclusively on tabular features like BHK count, carpet area, and city name. They completely ignore two critical dimensions that physically drive the Indian real estate market:
 
@@ -23,6 +49,29 @@ Traditional Automated Valuation Models (AVMs) rely exclusively on tabular featur
 2. **Cultural design rules** — Vastu Shastra compliance (directional facing, room placement geometry)
 
 This project solves that gap by fusing three independent neural streams (Vision + Text + Tabular) through a Transformer cross-attention layer, producing ROI-adjusted property valuations that account for both quantitative metrics and qualitative cultural signals.
+
+---
+
+## Partner(s)/Contributor(s)
+
+1. Sridhar Surapaneni
+2. Vikrant Tiwari
+3. Navyesh Pamarthi
+
+---
+
+## Methods Used
+
+| Category | Technologies |
+|:---|:---|
+| **Deep Learning** | PyTorch, torchvision (ViT-B/16), HuggingFace Transformers (mBERT) |
+| **ML/Baselines** | XGBoost, scikit-learn |
+| **Optimization** | Optuna (TPE Bayesian search) |
+| **MLOps** | MLflow (file-backend tracking) |
+| **Frontend** | Streamlit, Folium, Plotly, Matplotlib |
+| **Agentic AI** | LangChain, Model Context Protocol (MCP) |
+| **XAI** | Grad-CAM, SHAP |
+| **Deployment** | Streamlit Community Cloud, GitHub Releases |
 
 ---
 
@@ -194,31 +243,6 @@ The Supervisor Agent in Tab 4 (AI Consultant) accepts natural language queries a
 
 ---
 
-## Quickstart (Local Development)
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7.git
-cd AAI-590-Capstone-Group7
-
-# 2. Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# 3. Launch Streamlit (model weights auto-download from GitHub Releases)
-streamlit run app/main.py
-# Open: http://localhost:8501
-
-# 4. Launch MLflow (optional, for viewing training runs)
-mlflow ui --backend-store-uri file://$(pwd)/mlruns --port 5000
-# Open: http://localhost:5000
-```
-
-Model weights (ViT 327MB, XGBoost 487KB, Scaler 1.3KB) are hosted on [GitHub Releases v1.0](https://github.com/SridharSurapaneni07/AAI-590-Capstone-Group7/releases/tag/v1.0) and download automatically on first app launch.
-
----
-
 ## Project Structure
 
 ```
@@ -259,20 +283,7 @@ Model weights (ViT 327MB, XGBoost 487KB, Scaler 1.3KB) are hosted on [GitHub Rel
 ```
 
 ---
-
-## Tech Stack
-
-| Category | Technologies |
-|:---|:---|
-| **Deep Learning** | PyTorch, torchvision (ViT-B/16), HuggingFace Transformers (mBERT) |
-| **ML/Baselines** | XGBoost, scikit-learn |
-| **Optimization** | Optuna (TPE Bayesian search) |
-| **MLOps** | MLflow (file-backend tracking) |
-| **Frontend** | Streamlit, Folium, Plotly, Matplotlib |
-| **Agentic AI** | LangChain, Model Context Protocol (MCP) |
-| **XAI** | Grad-CAM, SHAP |
-| **Deployment** | Streamlit Community Cloud, GitHub Releases |
-
----
+## License
+Distributed under the MIT License. See LICENSE for more information.
 
 *AAI-590 Capstone — University of San Diego, Applied Artificial Intelligence*
